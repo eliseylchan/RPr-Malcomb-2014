@@ -667,6 +667,7 @@ ta_capacity_t %>% saveRDS(here(public_d, "adaptive_capacity.RDS"))
 rm(list=c("dhsclusters", "dhshh", "cluster_ta", "hh_capacity_t", "ta_capacity_t"))
 ```
 
+## RUN FROM HERE 
 Load aggregated public adaptive capacity data.
 
 ```{r load-TA-adaptive-capacity}
@@ -1094,6 +1095,62 @@ vuln_map = ggplot() +
 
 vuln_map
 ```
+##ADDITION: ZONAL STATS
+```{r compute-zonal-stats}
+# select the wanted TAs and info. Leaves 134 TAs
+zonal_ta_input <- ta_v %>% 
+  select(geom, NAME_2, TYPE_2) %>% 
+  filter(TYPE_2 == "Traditional Authority")
+
+# take mean vulnerability score across TA
+ta_vuln <- aggregate(vulnerability_r, zonal_ta_input, FUN = mean) %>% 
+  st_as_sf()
+
+# plot vulnerability score for each TA
+ta_vuln_map <- ggplot() + 
+  geom_sf(
+    data = ta_vuln, 
+    aes(fill = vulnerability, 
+        label = vulnerability)
+  ) +
+  #geom_sf_text(data = ta_vuln, aes(label = round(vulnerability, digits = 0)), size = 1) +
+  scale_fill_continuous(
+    name = "Mean Vulnerability Score Per TA", 
+    low="lemonchiffon1", 
+    high="lightcoral"
+  ) +
+  scale_y_continuous(breaks=seq(-17,-10,1)) +
+  scale_x_continuous(breaks=seq(33,36,1)) +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank())
+
+ta_vuln_map
+
+#export plot
+#ggsave("ta_vuln_map.jpg", plot = ta_vuln_map)
+```
+
+### Zonal Summary Statistic
+```{r}
+
+# join polygons to TA names from ta_v to identify TAs. Has 111 TAs with valid vulnerability scores.
+ta_vuln_with_names <- st_join(ta_vuln, ta_v, join = st_equals, left = TRUE) %>% 
+  drop_na("vulnerability")
+
+#compute summary statistics
+# min, max
+
+# TA with min score
+ta_vuln_with_names %>% 
+  filter(vulnerability == min(vulnerability)) %>% 
+  pull(NAME_2, vulnerability)
+
+# TA with max score
+ta_vuln_with_names %>% 
+  filter(vulnerability == max(vulnerability)) %>% 
+  pull(NAME_2, vulnerability)
+```
+
 
 ```{r saving spatial data outputs}
 write_stars(capacity_r, here("data","derived","public","ta_capacity.tif"))
