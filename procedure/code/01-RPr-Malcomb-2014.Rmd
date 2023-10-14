@@ -1298,8 +1298,10 @@ vuln_map
 ```
 
 ##MODIFICATION: Vulnerability Score by TA
+To calculate the climate change vulnerability score for each TA, I took the mean score of all pixels in each TA with an adaptive capacity score. The TA with the lowest vulnerability score is Kasukula (35.9). The TA with the highest vulnerability score is Lundu (73.4).
+
 ```{r compute-zonal-stats}
-# select the wanted TAs and info. Leaves 134 TAs
+# select TAs and relevant info. 134 TAs.
 zonal_ta_input <- ta_v %>% 
   select(geom, NAME_2, TYPE_2) %>% 
   filter(TYPE_2 == "Traditional Authority")
@@ -1313,13 +1315,15 @@ ta_vuln_map <- ggplot() +
   geom_sf(
     data = ta_vuln, 
     aes(fill = vulnerability, 
-        label = vulnerability)
+        label = vulnerability),
+    color = "grey98"
   ) +
   #geom_sf_text(data = ta_vuln, aes(label = round(vulnerability, digits = 0)), size = 1) +
   scale_fill_continuous(
     name = "Mean Vulnerability Score Per TA", 
     low="lemonchiffon1", 
-    high="lightcoral"
+    high="lightcoral",
+    na.value = "transparent"
   ) +
   scale_y_continuous(breaks=seq(-17,-10,1)) +
   scale_x_continuous(breaks=seq(33,36,1)) +
@@ -1332,9 +1336,7 @@ ta_vuln_map
 #ggsave("ta_vuln_map.jpg", plot = ta_vuln_map)
 ```
 
-### Zonal Summary Statistic
-```{r}
-
+```{r zonal-summary-statistic, eval=FALSE}
 # join polygons to TA names from ta_v to identify TAs. Has 111 TAs with valid vulnerability scores.
 ta_vuln_with_names <- st_join(ta_vuln, ta_v, join = st_equals, left = TRUE) %>% 
   drop_na("vulnerability")
