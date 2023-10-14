@@ -1297,7 +1297,7 @@ vuln_map = ggplot() +
 vuln_map
 ```
 
-##ADDITION: ZONAL STATS
+##MODIFICATION: Vulnerability Score by TA
 ```{r compute-zonal-stats}
 # select the wanted TAs and info. Leaves 134 TAs
 zonal_ta_input <- ta_v %>% 
