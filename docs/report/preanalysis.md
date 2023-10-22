@@ -82,7 +82,7 @@ This registration is based upon knowledge of the original study based upon a tho
 In full transparency, we have already attempted the reproduction study, including acquisition and analysis of all of the secondary data sources required.
 This preregistration serves two purposes for us:
 1. Revisiting the original paper to document the most complete knowledge of the data and methodology possible without acquiring data or beginning analysis, represented in this preregistration.
-1. Practicing and demonstrating the full workflow of a reproduction study in the human-environment and geographical sciences, including preregistration, reproducible computational research practices, and publication of a reproduction report.
+2. Practicing and demonstrating the full workflow of a reproduction study in the human-environment and geographical sciences, including preregistration, reproducible computational research practices, and publication of a reproduction report.
 
 Therefore, we have not taken steps to not explore or analyze the data. Rather, we are practicing the intellectual challenge of practicing a scenario in which we are preregistering the reproduction study as if we had only read the original study.
 
