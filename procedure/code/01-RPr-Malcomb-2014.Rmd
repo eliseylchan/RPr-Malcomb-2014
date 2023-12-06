@@ -1293,9 +1293,11 @@ vuln_map = ggplot() +
 vuln_map
 ```
 
-##MODIFICATION: Vulnerability Score by TA To calculate the climate change vulnerability score for each TA, I took the mean score of all pixels in each TA with an adaptive capacity score.
-The TA with the lowest vulnerability score is Kasukula (35.9).
-The TA with the highest vulnerability score is Lundu (73.4).
+### New Planned Deviation: Map Vulnerability by Traditional Authority
+
+The original study does not compute the vulnerability score for each TA, which is the scale that the social data is aggregated on. Instead, a vulnerability score is calculated per pixel in the raster. To help visualize vulnerability scores with the goal of aiding policy makers distribute resources among administrative areas, I calculated the climate change vulnerability score for the TAs. 
+
+The TA vulnerability score was calculated by taking the mean vulnerability score of the all pixels in the TA. Not all TAs had an adaptive capacity score, so not every TA received a score.
 
 ```{r compute-zonal-stats}
 # select TAs and relevant info. 134 TAs.
@@ -1316,10 +1318,9 @@ ta_vuln_map <- ggplot() +
     color = "grey98"
   ) +
   #geom_sf_text(data = ta_vuln, aes(label = round(vulnerability, digits = 0)), size = 1) +
-  scale_fill_continuous(
+  scale_fill_discrete(
     name = "Mean Vulnerability Score Per TA", 
-    low="lemonchiffon1", 
-    high="lightcoral",
+    colors = c("lemonchiffon1", "orange", "lightcoral", "firebrick"),
     na.value = "transparent"
   ) +
   scale_y_continuous(breaks=seq(-17,-10,1)) +
@@ -1333,7 +1334,12 @@ ta_vuln_map
 #ggsave("ta_vuln_map.jpg", plot = ta_vuln_map)
 ```
 
-```{r zonal-summary-statistic, eval=FALSE}
+To pull what score is associated with each TA by TA name, the TA polygons with the score need to be joined to the TA names.
+
+The TA with the lowest vulnerability score is Kasukula (35.9).
+The TA with the highest vulnerability score is Lundu (73.4).
+
+```{r zonal-summary-statistic}
 # join polygons to TA names from ta_v to identify TAs. Has 111 TAs with valid vulnerability scores.
 ta_vuln_with_names <- st_join(ta_vuln, ta_v, join = st_equals, left = TRUE) %>% 
   drop_na("vulnerability")
@@ -1492,6 +1498,7 @@ The map comparing the original and reproduction vulnerability risk assessment (F
 However, the Spearman Rho coefficient of 0.197 suggests the values assigned have very little correlation to those of the original study.
 The vulnerability score is based on the adaptive capacity score, so errors in the adaptive capacity could propagate into the uncertainty we see in the vulnerability reproduced score.
 However, the vulnerability score is an *additive* aggregation, so there must have been errors in the other factors in order to yield the random predictions.
+The added map of vulnerability scores at the TA level shows the areas of highest vulnerability clustered in the southern-most and northern-most parts of Malawi, as well as on the southern shore of Lake Malawi. Calculating vulnerability score by an administrative area like TAs would aid policy makers determine how to distribute resources in Malawi, which was one of the study's goals.
 
 ## Discrepancies in Original Study
 
@@ -1505,6 +1512,8 @@ The original paper does not contain any further detail on the spatial sampling o
 A modification to the original study is calculating climate change vulnerability scores for each traditional authority.
 
 # Conclusions
+
+We were able to reproduce maps of climate vulnerability score across Malawi. However, our results did not perfectly align with the results of the original study and underestimated the original study's score for over half of the traditional authorities. This can be attributed to discrepancies in the traditional authority data set. Calculating vulnerability scores by TA also revealed the method's sensitivity to partition distortion.
 
 # Integrity Statement
 
