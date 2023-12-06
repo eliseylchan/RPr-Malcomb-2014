@@ -1,6 +1,6 @@
 ---
 title: "Reproduction Analysis of Malcomb et al 2014"
-author: "Joseph Holler, Kufre Udoh, Drew An-Pham, Middlebury Open GIScience Classes"
+author: "Joseph Holler, Kufre Udoh, Drew An-Pham, Elise Chan, Middlebury Open GIScience Classes"
 date: "`r Sys.Date()`"
 output: html_document
 editor_options:
@@ -1313,15 +1313,14 @@ ta_vuln <- aggregate(vulnerability_r, zonal_ta_input, FUN = mean) %>%
 ta_vuln_map <- ggplot() + 
   geom_sf(
     data = ta_vuln, 
-    aes(fill = vulnerability, 
+    aes(fill = cut(vulnerability, breaks = 4), 
         label = vulnerability),
     color = "grey98"
   ) +
   #geom_sf_text(data = ta_vuln, aes(label = round(vulnerability, digits = 0)), size = 1) +
-  scale_fill_discrete(
+  scale_fill_manual(
     name = "Mean Vulnerability Score Per TA", 
-    colors = c("lemonchiffon1", "orange", "lightcoral", "firebrick"),
-    na.value = "transparent"
+    values = c("lemonchiffon1", "orange", "lightcoral", "firebrick"),
   ) +
   scale_y_continuous(breaks=seq(-17,-10,1)) +
   scale_x_continuous(breaks=seq(33,36,1)) +
@@ -1331,7 +1330,7 @@ ta_vuln_map <- ggplot() +
 ta_vuln_map
 
 #export plot
-#ggsave("ta_vuln_map.jpg", plot = ta_vuln_map)
+ggsave("ta_vuln_map.jpg", plot = ta_vuln_map)
 ```
 
 To pull what score is associated with each TA by TA name, the TA polygons with the score need to be joined to the TA names.
